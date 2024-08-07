@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Custom Receiver</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+        }
+        img, video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+    <script src="https://www.gstatic.com/cast/sdk/libs/cast_receiver/4.0.0/cast_receiver_framework.js"></script>
+</head>
+<body>
+    <img id="placeholder" src="https://static1.howtogeekimages.com/wordpress/wp-content/uploads/2021/04/mac_screen_mirror_hero_1200.jpg?q=50&fit=crop&w=1100&h=618&dpr=1.5" alt="Placeholder Image" />
+    <video id="stream" style="display:none;" autoplay></video>
+    <script>
+        const context = cast.framework.CastReceiverContext.getInstance();
+        const playerManager = context.getPlayerManager();
+
+        // Define custom namespace
+        const customNamespace = 'urn:x-cast:com.example.custom';
+
+        context.addCustomMessageListener(customNamespace, function(event) {
+            const message = event.data;
+            if (message.command === 'startStream') {
+                startStream(message.url);
+            }
+        });
+
+        function startStream(url) {
+            const videoElement = document.getElementById('stream');
+            const imgElement = document.getElementById('placeholder');
+            videoElement.src = url;
+            videoElement.style.display = 'block';
+            imgElement.style.display = 'none';
+        }
+
+        context.start();
+    </script>
+</body>
+</html>
